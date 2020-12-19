@@ -1,0 +1,133 @@
+Sub stock_analysis():
+
+'setting dimensions
+
+    Dim total As Double
+    Dim i As Long
+    Dim change As Double
+    Dim j As Integer
+    Dim start As Long
+    Dim row_count As Long
+    Dim percentchange As Double
+    Dim days As Integer
+    Dim dailychange As Double
+    Dim averagechange As Double
+    Dim ws As Worksheet
+    
+    For Each ws In Worksheets
+        j = 0
+        total = 0
+        change = 0
+        start = 2
+        dailychange = 0
+    
+        
+    'Setting title rows
+        ws.Range("i1").Value = "Ticker"
+        ws.Range("j1").Value = "Yearly Change"
+        ws.Range("k1").Value = "Percent Change"
+        ws.Range("l1").Value = "Total Stock Volume"
+    
+    
+        RowCount = ws.Cells(Rows.Count, "A").End(xlUp).Row
+        For i = 2 To RowCount
+            If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+            total = total + ws.Cells(i, 7).Value
+            
+            If total = 0 Then
+                ws.Range("i" & 2 + j).Value = Cells(i, 1).Value
+                ws.Range("j" & 2 + j).Value = 0
+                ws.Range("k" & 2 + j).Value = "%" & 0
+                ws.Range("l" & 2 + j).Value = 0
+            Else
+                If ws.Cells(start, 3) = 0 Then
+                    For find_value = start To i
+                        If ws.Cells(find_value, 3).Value <> 0 Then
+                            start = find_value
+                            Exit For
+                        End If
+                    Next find_value
+                End If
+                
+                change = (ws.Cells(i, 6) - ws.Cells(start, 3))
+                percentchange = Round((change / ws.Cells(start, 3) * 100), 2)
+                
+                start = i + 1
+                ws.Range("i" & 2 + j).Value = ws.Cells(i, 1).Value
+                ws.Range("j" & 2 + j).Value = Round(change, 2)
+                ws.Range("k" & 2 + j).Value = "%" & percentchange
+                ws.Range("l" & 2 + j).Value = total
+                
+                If change > 0 Then
+                    ws.Range("j" & 2 + j).Interior.ColorIndex = 4
+                ElseIf change < 0 Then
+                    ws.Range("j" & 2 + j).Interior.ColorIndex = 3
+                Else
+                    ws.Range("j" & 2 + j).Interior.ColorIndex = 0
+                End If
+            End If
+            total = 0
+            change = 0
+            j = j + 1
+            days = 0
+            dailychange = 0
+        Else
+            total = total + ws.Cells(i, 7).Value
+        End If
+    Next i
+                
+            
+    Next ws
+    
+    For i = 2 To RowCount
+    
+    If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+    
+        total = total + Cells(i, 7).Value
+    
+    If total = 0 Then
+        Range("i" & 2 + j).Value = Cells(i, 1).Value
+        Range("j" & 2 + j).Value = 0
+        Range("k" & 2 + j).Value = "%" & 0
+        Range("l" & 2 + j).Value = 0
+    Else
+        If Cells(start, 3) = 0 Then
+            For find_value = start To i
+                If Cells(find_value, 3).Value <> 0 Then
+                    start = find_value
+                    Exit For
+                End If
+            
+            Next find_value
+        End If
+        
+        change = (Cells(i, 6) - Cells(start, 3))
+        percentchange = Round((change / Cells(start, 3) * 100), 2)
+        'start of stock ticker
+       start = i + 1
+       
+       Range("i" & 2 + j).Value = Cells(i, 1).Value
+       Range("j" & 2 + j).Value = Round(change, 2)
+       Range("k" & 2 + j).Value = "%" & percentchange
+       Range("l" & 2 + j).Value = total
+       
+       If change > 0 Then
+            Range("j" & 2 + j).Interior.ColorIndex = 4
+        ElseIf change < 0 Then
+            Range("j" & 2 + j).Interior.ColorIndex = 3
+        Else
+            Range("j" & 2 + j).Interior.ColorIndex = 0
+        End If
+    End If
+    
+    total = 0
+    change = 0
+    j = j + 1
+    days = 0
+    Else
+    total = total + Cells(i, 7).Value
+    End If
+    Next i
+    
+End Sub
+
